@@ -1,25 +1,26 @@
+.SUFFIXES:            # Delete the default suffixes
+.SUFFIXES: .c .o .h   # Define our suffix list
+
 CC=gcc
-CFLAGS=-Wall
-
-#
-# Set vpath so c file are located in src
-# and o files are in obj
-#
-vpath %.c src
-vpath %.o obj
-
-#source := $(wildcard *.c) 
-objects := $(addprefix obj/, $(patsubst %.c,%.o,$(wildcard *.c)))
-
-search: $(objects)
-
-%.o: %.c
+CFLAGS=-Wall -MD -MP
 
 
+src := $(wildcard src/*.c) 
+obj := $(src:src/%.c=src/obj/%.o)
+$(info src: $(src))
 
+bin/search: $(obj)
+	$(CC) -o $@ $^
+
+$(obj): $(src) | dir
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
+
+dir :
+	mkdir -p src/obj
+	mkdir -p bin 
 
 clean: 
 	rm -f bin/search
-	rm -rf obj/
+	rm -rf src/obj/
 
-.PHONY : clean
+.PHONY : clean dir makefile
