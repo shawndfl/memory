@@ -7,13 +7,19 @@ CFLAGS=-Wall -MD -MP
 
 src := $(wildcard src/*.c) 
 obj := $(src:src/%.c=src/obj/%.o)
-$(info src: $(src))
 
+#$(info src: $(src))
+
+# main app
 bin/search: $(obj)
-	$(CC) -o $@ $^
+	$(CC) $(CFLAGS) -o $@ $^
 
+# Obj files
 $(obj): $(src) | dir
-	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
+	$(CC) -c $(CFLAGS) -o $@ $<
+
+# Include dependencies
+-include $(src:src%.c=src/obj/%.d)
 
 dir :
 	mkdir -p src/obj
