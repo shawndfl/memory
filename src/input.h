@@ -36,7 +36,10 @@ char * inputLine(void) {
         }
 
         if((*line++ = c) == '\n')
+        {
+            line--; //We don't want the \n char
             break;
+        }
     }
     *line = '\0';
     return linep;

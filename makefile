@@ -15,7 +15,7 @@ bin/search: $(obj)
 	$(CC) $(CFLAGS) -o $@ $^
 
 # Obj files
-$(obj): $(src) | dir
+src/obj/%.o : src/%.c  | dir
 	$(CC) -c $(CFLAGS) -o $@ $<
 
 # Include dependencies
