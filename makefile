@@ -4,6 +4,11 @@
 CC=gcc
 CFLAGS=-Wall -MD -MP
 
+#
+# Create directories
+#
+$(shell mkdir -p src/obj > /dev/null 2>&1)
+$(shell mkdir -p bin  > /dev/null 2>&1)
 
 src := $(wildcard src/*.c) 
 obj := $(src:src/%.c=src/obj/%.o)
@@ -15,15 +20,13 @@ bin/search: $(obj)
 	$(CC) $(CFLAGS) -o $@ $^
 
 # Obj files
-src/obj/%.o : src/%.c  | dir
+src/obj/%.o : src/%.c  
 	$(CC) -c $(CFLAGS) -o $@ $<
 
 # Include dependencies
 -include $(src:src%.c=src/obj/%.d)
 
-dir :
-	mkdir -p src/obj
-	mkdir -p bin 
+all: bin/search
 
 clean: 
 	rm -f bin/search

@@ -2,7 +2,7 @@
 
 int g_pid;
 
-int ReadM(int address);
+int ReadM(long address);
 
-int WriteM(int address, int value);
+int WriteM(long address, int value);
 

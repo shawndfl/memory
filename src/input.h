@@ -1,3 +1,5 @@
+#ifndef SRC_INPUT_H_
+#define SRC_INPUT_H_
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -46,3 +48,4 @@ char * inputLine(void) {
 }
 
 
+#endif

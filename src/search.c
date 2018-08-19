@@ -2,13 +2,15 @@
 #include "search.h"
 
 #include <stdio.h>
-#include <sys/uio.h>
 #include <stdlib.h>
 
-extern int pid;
+#define __USE_GNU
+#include <sys/uio.h>
+
+extern int g_pid;
 
 /**********************************************************/
-int ReadM(int address)
+int ReadM(long address)
 {
   
   struct iovec local[1];
@@ -18,12 +20,12 @@ int ReadM(int address)
 
   local[0].iov_base = buf1;
   local[0].iov_len = 4;
-  remote[0].iov_base = (void *) address;
+  remote[0].iov_base = (void *)address;
   remote[0].iov_len = 4;
 
   printf("g_pid is %d\n", g_pid);
   nread = process_vm_readv(g_pid, local, 1, remote, 1, 0);
-  printf("Read %d bytes. Value is %d\n", nread, *buf1);
+  printf("Read %d bytes. Value is %d\n", (int)nread, *buf1);
   if (nread != 20)
       return 1;
   else
@@ -31,7 +33,7 @@ int ReadM(int address)
 }
 
 /**********************************************************/
-int WriteM(int address, int value)
+int WriteM(long address, int value)
 {
   struct iovec local[1];                                       
   struct iovec remote[1];
@@ -46,6 +48,6 @@ int WriteM(int address, int value)
   
   printf("g_pid is %d\n", g_pid);
   nread = process_vm_writev(g_pid, local, 1, remote, 1, 0);
-  printf("Write %d bytes. \n", nread);
+  printf("Write %d bytes. \n", (int)nread);
   return 0;
 }
