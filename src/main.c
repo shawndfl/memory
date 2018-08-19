@@ -18,6 +18,8 @@ int main(int argc, char **argv)
       address=(int)strtol(argv[2], NULL, 16);
     }
   }
+
+  GetRegions();
       
   int value=ReadM(address);
   printf ("Value is %d\n", value);

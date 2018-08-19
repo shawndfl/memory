@@ -2,7 +2,7 @@
 .SUFFIXES: .c .o .h   # Define our suffix list
 
 CC=gcc
-CFLAGS=-Wall -MD -MP
+CFLAGS=-Wall -MD -MP -g
 
 #
 # Create directories

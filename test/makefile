@@ -5,7 +5,7 @@
 # Set Flags
 #
 CC=gcc
-CFLAGS=-Wall -MD -MP -I../src
+CFLAGS=-Wall -MD -MP -I../src -g
 
 #
 # Create directories
