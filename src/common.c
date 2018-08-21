@@ -8,17 +8,29 @@
 #include <stdlib.h>
 
 /**********************************************************/
-IntCollection IntCollectionCreate(int size)
+void IntCollectionCreate(IntCollection* collection, int initializeSize)
 {
-  IntCollection collection = { malloc(sizeof(int) * size), size};
-  return collection;
+  collection->count = 0;
+  collection->i = malloc(sizeof(int) * initializeSize);
+  collection->maxSize = initializeSize;
 }
 
 /**********************************************************/
-void IntCollectionFree(IntCollection collection)
+void IntCollectionFree(IntCollection* collection)
 {
-  free(collection.num);
-  collection.count = 0;
-  collection.num = NULL;
+  free(collection->i);
+  collection->count = 0;
+  collection->i = NULL;
+  collection->maxSize = 0;
 }
 
+/**********************************************************/
+
+void IntCollectionAdd(IntCollection* collection, int num)
+{
+  if (collection->count < collection->maxSize)
+  {
+    collection->i[collection->count++] = num;
+  }
+
+}

@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <linux/limits.h>
+#include <stdbool.h>
 
 #define __USE_GNU
 #include <sys/uio.h>
@@ -15,7 +16,7 @@ extern int g_pid;
  * example:
  *    7fa988062000-7fa98821b000 r-xp 00000000 fd:00 2232819  /usr/lib64/libc-2.23.so
  */
-struct Region
+typedef struct Region
 {
   unsigned int min;
   unsigned int max;
@@ -24,9 +25,16 @@ struct Region
   char device[6];
   int inode;
   char path[PATH_MAX];
-};
+} Region;
 
-struct Region Region(char* line, int len)
+/**********************************************************/
+bool CanReadWrite(Region* region)
+{
+  return region->permissions[0] == 'r' && region->permissions[1] == 'w';
+}
+
+/**********************************************************/
+Region ParseRegion(char* line, int len)
 {
   struct Region ret;
   char tmp[PATH_MAX] = { 0 };
@@ -37,7 +45,8 @@ struct Region Region(char* line, int len)
   int tmpIndex = 0;
   for (int i = 0; i < len; i++)
   {
-    if ((column == 0 && line[i] == '-') || line[i] == ' ' || line[i] == '\n' || line[i] == '\0')
+    if ((column == 0 && line[i] == '-') || line[i] == ' ' || line[i] == '\n'
+        || line[i] == '\0')
     {
       tmp[tmpIndex] = '\0';
       //printf("[INFO]: col: %d -->|%s|\n", column, tmp);
@@ -80,14 +89,15 @@ struct Region Region(char* line, int len)
 }
 
 /**********************************************************/
-IntCollection GetRegions()
+void GetRegions(IntCollection* ranges)
 {
   FILE *stream;         // Stream for opening /proc/<pid>/maps
   char *line = NULL;    // Each line of the output
   size_t len = 0;       // The length of the line
   ssize_t nread;        // The number of chars read
   char pidStr[20];      // Holds the pid in string format
-  IntCollection intCollection = IntCollectionCreate(10);  // The first range found
+
+  IntCollectionCreate(ranges, 10);
 
 // Get the string value of pid
   sprintf(pidStr, "%d", g_pid);
@@ -108,7 +118,13 @@ IntCollection GetRegions()
 
   while ((nread = getline(&line, &len, stream)) != -1)
   {
-    struct Region reg = Region(line, len);
+    Region reg = ParseRegion(line, len);
+    if (CanReadWrite(&reg))
+    {
+      IntCollectionAdd(ranges, reg.min);
+      IntCollectionAdd(ranges, reg.max);
+    }
+
     //printf("[INFO]: %s\n", line);
     LOGI("min: %0x\n", reg.min);
     LOGI("max: %0x\n", reg.max);
@@ -118,7 +134,6 @@ IntCollection GetRegions()
 
   free(line);
   fclose(stream);
-  return intCollection;
 }
 
 /**********************************************************/
@@ -137,7 +152,7 @@ int ReadM(long address)
 
   LOGI("g_pid is %d\n", g_pid);
   nread = process_vm_readv(g_pid, local, 1, remote, 1, 0);
-  LOGI("Read %d bytes. Value is %d\n", (int) nread, *buf1);
+  LOGI("Read %d bytes. Value is %d\n", (int ) nread, *buf1);
   if (nread != 20)
     return 1;
   else
@@ -160,6 +175,12 @@ int WriteM(long address, int value)
 
   LOGI("g_pid is %d\n", g_pid);
   nwrite = process_vm_writev(g_pid, local, 1, remote, 1, 0);
-  LOGI("Write %d bytes. \n", (int) nwrite);
+  LOGI("Write %d bytes. \n", (int ) nwrite);
   return nwrite;
+}
+
+/**********************************************************/
+void Search(IntCollection* addressRanges, int value)
+{
+
 }

@@ -29,8 +29,10 @@ int main(int argc, char **argv)
     LOGE("Missing pid of remote program.\n");
     return 1;
   }
+  IntCollection ranges;
 
-  GetRegions();
+  GetRegions(&ranges);
+  Search(&ranges, 10);
 
   int value = ReadM(address);
   LOGI("Value is %d\n", value);

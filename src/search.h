@@ -29,6 +29,12 @@ int WriteM(long address, int value);
 /*
  * Get a memory regions
  */
-IntCollection GetRegions();
+void GetRegions(IntCollection* ranges);
+
+/*
+ * Searches a collection of address ranges for a given value.
+ *
+ */
+void Search(IntCollection* addressRanges, int value);
 
 #endif

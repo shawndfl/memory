@@ -19,8 +19,9 @@
  */
 typedef struct IntCollection
 {
-  int* num;
-  int count;
+  int* i;     // Items
+  int count;  // How many items are in the list
+  int maxSize; // How much memory is allocated.
 }IntCollection;
 
 /*
@@ -29,13 +30,19 @@ typedef struct IntCollection
  * Param: size - The size of the collection.
  * Returns:  IntCollection allocated with the given size
  */
-IntCollection IntCollectionCreate(int size);
+void IntCollectionCreate(IntCollection* collection, int initializeSize);
 
 /*
  * Frees a IntCollection and sets the size to zero.
  * Param: collection - The IntCollection that will be freed.
  */
-void IntCollectionFree(IntCollection collection);
+void IntCollectionFree(IntCollection* collection);
+
+/*
+ * Adds a number to the collection
+ */
+void IntCollectionAdd(IntCollection* collection, int num);
+
 
 
 /*************************************************************
