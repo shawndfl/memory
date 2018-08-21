@@ -10,12 +10,14 @@ int main(int argc, char **argv)
   LOGI("args %d %s\n", argc, argv[0]);
 
   int address = 0;
+  int value = 0;
   if (argc > 1)
   {
     g_pid = atoi(argv[1]);
     if (argc > 2)
     {
-      address = (int) strtol(argv[2], NULL, 16);
+      //address = (int) strtol(argv[2], NULL, 16);
+      value = (int) strtol(argv[2], NULL, 16);
     }
     else
     {
@@ -32,9 +34,9 @@ int main(int argc, char **argv)
   IntCollection ranges;
 
   GetRegions(&ranges);
-  Search(&ranges, 10);
+  Search(&ranges, value);
 
-  int value = ReadM(address);
+  int currentValue = ReadM(address);
   LOGI("Value is %d\n", value);
 
   WriteM(address, 99);

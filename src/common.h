@@ -8,6 +8,18 @@
 #ifndef SRC_COMMON_H_
 #define SRC_COMMON_H_
 
+#include <stdio.h>
+#include <stdlib.h>
+
+/*************************************************************
+ *          Logging functions
+ *************************************************************/
+#define LOGD(...) fprintf(stdout,"[DEBUG] %s %s (%d): ", __TIME__, __FILE__, __LINE__); fprintf(stdout, __VA_ARGS__);
+#define LOGI(...) fprintf(stdout,"[INFO]  %s %s (%d): ", __TIME__, __FILE__, __LINE__); fprintf(stdout, __VA_ARGS__);
+#define LOGW(...) fprintf(stdout,"[WARN]  %s %s (%d): ", __TIME__, __FILE__, __LINE__); fprintf(stdout, __VA_ARGS__);
+#define LOGE(...) fprintf(stdout,"[ERROR] %s %s (%d): ", __TIME__, __FILE__, __LINE__); fprintf(stdout, __VA_ARGS__);
+
+
 /*************************************************************
  *        Collection functions
  *************************************************************/
@@ -43,14 +55,5 @@ void IntCollectionFree(IntCollection* collection);
  */
 void IntCollectionAdd(IntCollection* collection, int num);
 
-
-
-/*************************************************************
- *          Logging functions
- *************************************************************/
-#define LOGD(...) fprintf(stdout,"[DEBUG] %s %s (%d): ", __TIME__, __FILE__, __LINE__); fprintf(stdout, __VA_ARGS__);
-#define LOGI(...) fprintf(stdout,"[INFO]  %s %s (%d): ", __TIME__, __FILE__, __LINE__); fprintf(stdout, __VA_ARGS__);
-#define LOGW(...) fprintf(stdout,"[WARN]  %s %s (%d): ", __TIME__, __FILE__, __LINE__); fprintf(stdout, __VA_ARGS__);
-#define LOGE(...) fprintf(stdout,"[ERROR]  %s %s (%d): ", __TIME__, __FILE__, __LINE__); fprintf(stdout, __VA_ARGS__);
 
 #endif /* SRC_COMMON_H_ */

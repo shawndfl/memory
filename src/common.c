@@ -31,6 +31,11 @@ void IntCollectionAdd(IntCollection* collection, int num)
   if (collection->count < collection->maxSize)
   {
     collection->i[collection->count++] = num;
+    LOGI("Adding %d\n", num);
+  }
+  else
+  {
+    LOGW("Number out of range max: %d count: %d\n" , collection->maxSize, collection->count);
   }
 
 }
