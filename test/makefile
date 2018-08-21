@@ -11,11 +11,11 @@ CFLAGS=-Wall -MD -MP -I../src -g
 # Create directories
 #
 $(shell mkdir -p src/obj > /dev/null 2>&1)
-$(shell mkdir -p bin  > /dev/null 2>&1)
+$(shell mkdir -p ../bin  > /dev/null 2>&1)
 
 
 src := $(wildcard src/*.c) 
-app := bin/tests 
+app := ../bin/tests 
 obj := $(src:src/%.c=src/obj/%.o)
 
 #$(info src: $(src))
@@ -36,7 +36,7 @@ test: $(app)
 	$(app)
 
 clean: 
-	rm -rf bin/
+	rm -rf $(app)
 	rm -rf src/obj/
 
 .PHONY : clean dir makefile test

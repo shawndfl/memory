@@ -102,7 +102,7 @@ IntCollection GetRegions()
   stream = fopen(file, "r");
   if (stream == NULL)
   {
-    perror("fopen");
+    LOGE("Cannot open %s", file);
     exit(EXIT_FAILURE);
   }
 
@@ -110,10 +110,10 @@ IntCollection GetRegions()
   {
     struct Region reg = Region(line, len);
     //printf("[INFO]: %s\n", line);
-    printf("[INFO]: min: %0x\n", reg.min);
-    printf("[INFO]: max: %0x\n", reg.max);
-    printf("[INFO]: perm: %s\n", reg.permissions);
-    printf("[INFO]: path: %s\n", reg.path);
+    LOGI("min: %0x\n", reg.min);
+    LOGI("max: %0x\n", reg.max);
+    LOGI("perm: %s\n", reg.permissions);
+    LOGI("path: %s\n", reg.path);
   }
 
   free(line);
@@ -135,9 +135,9 @@ int ReadM(long address)
   remote[0].iov_base = (void *) address;
   remote[0].iov_len = 4;
 
-  printf("g_pid is %d\n", g_pid);
+  LOGI("g_pid is %d\n", g_pid);
   nread = process_vm_readv(g_pid, local, 1, remote, 1, 0);
-  printf("Read %d bytes. Value is %d\n", (int) nread, *buf1);
+  LOGI("Read %d bytes. Value is %d\n", (int) nread, *buf1);
   if (nread != 20)
     return 1;
   else
@@ -158,8 +158,8 @@ int WriteM(long address, int value)
   remote[0].iov_base = (void *) address;
   remote[0].iov_len = 4;
 
-  printf("g_pid is %d\n", g_pid);
+  LOGI("g_pid is %d\n", g_pid);
   nwrite = process_vm_writev(g_pid, local, 1, remote, 1, 0);
-  printf("Write %d bytes. \n", (int) nwrite);
+  LOGI("Write %d bytes. \n", (int) nwrite);
   return nwrite;
 }

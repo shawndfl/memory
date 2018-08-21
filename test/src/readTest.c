@@ -7,28 +7,29 @@
 #include "input.h"
 
 int startTestApp();
-
-//int myFavoriteNumber=10; 
 int* myFavoriteNumber; 
 
 int main() {
     
-  myFavoriteNumber=(int)malloc(sizeof(int));
+  myFavoriteNumber=malloc(sizeof(int));
   *myFavoriteNumber=10;
   startTestApp();
 
-  printf("Test Passed\n");
   free(myFavoriteNumber);
   return EXIT_SUCCESS;
 }
 
 int startTestApp() {
   int pid = getpid();
-  printf("Starting app (%d)...\n", pid);
+  printf("--------------------------------------------\n");
+  printf("Starting Test App. Run the following to search memory:\n");
+  printf("search %d %p\n", pid, myFavoriteNumber);
+  printf("--------------------------------------------\n\n");
+
 
   while( *myFavoriteNumber != 0 ) 
   {
-    printf("Number is %d address is %p. Enter a new number or 0 to quit or -1 to refresh: ", *myFavoriteNumber, myFavoriteNumber);
+    printf("My favorite number is %d. Enter a new number or 0 to quit or -1 to refresh: ", *myFavoriteNumber);
     char* line = inputLine ();
     if( strcmp (line, "-1") != 0)
     {

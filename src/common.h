@@ -41,9 +41,9 @@ void IntCollectionFree(IntCollection collection);
 /*************************************************************
  *          Logging functions
  *************************************************************/
-#define LOGD(...) fprintf(stdout,"[DEBUG] %s %s (%d): ", __DATE__, __FILE__, __LINE__); fprintf(stdout, __VA_ARGS__);
-#define LOGI(...) fprintf(stdout,"[INFO]  %s %s (%d): ", __DATE__, __FILE__, __LINE__); fprintf(stdout, __VA_ARGS__);
-#define LOGW(...) fprintf(stdout,"[WARN]  %s %s (%d): ", __DATE__, __FILE__, __LINE__); fprintf(stdout, __VA_ARGS__);
-#define LOGE(...) fprintf(stdout,"[ERROR]  %s %s (%d): ", __DATE__, __FILE__, __LINE__); fprintf(stdout, __VA_ARGS__);
+#define LOGD(...) fprintf(stdout,"[DEBUG] %s %s (%d): ", __TIME__, __FILE__, __LINE__); fprintf(stdout, __VA_ARGS__);
+#define LOGI(...) fprintf(stdout,"[INFO]  %s %s (%d): ", __TIME__, __FILE__, __LINE__); fprintf(stdout, __VA_ARGS__);
+#define LOGW(...) fprintf(stdout,"[WARN]  %s %s (%d): ", __TIME__, __FILE__, __LINE__); fprintf(stdout, __VA_ARGS__);
+#define LOGE(...) fprintf(stdout,"[ERROR]  %s %s (%d): ", __TIME__, __FILE__, __LINE__); fprintf(stdout, __VA_ARGS__);
 
 #endif /* SRC_COMMON_H_ */
