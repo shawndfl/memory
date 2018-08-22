@@ -123,14 +123,18 @@ void GetRegions(IntCollection* ranges)
     {
       IntCollectionAdd(ranges, reg.min);
       IntCollectionAdd(ranges, reg.max);
+      //LOGI("min: %0x\n", reg.min);
+      //LOGI("max: %0x\n", reg.max);
+      //LOGI("perm: %s\n", reg.permissions);
+      //LOGI("path: %s\n", reg.path);
     }
-
-    //printf("[INFO]: %s\n", line);
-    LOGI("min: %0x\n", reg.min);
-    LOGI("max: %0x\n", reg.max);
-    LOGI("perm: %s\n", reg.permissions);
-    LOGI("path: %s\n", reg.path);
   }
+
+  //LOGI("---------------------------\n");
+  //for(int i = 0; i< ranges->count; i++)
+  //{
+  //  LOGI("%d: %0x\n", i, ranges->i[i]);
+  //}
 
   free(line);
   fclose(stream);
@@ -159,6 +163,26 @@ int ReadM(long address)
     return 0;
 }
 
+bool ReadM2(long startAddress, char* outBuffer, int size)
+{
+
+  struct iovec local[1];
+  struct iovec remote[1];
+  ssize_t nread;
+
+  local[0].iov_base = outBuffer;
+  local[0].iov_len = size;
+  remote[0].iov_base = (void *) startAddress;
+  remote[0].iov_len = size;
+
+  LOGI("g_pid is %d\n", g_pid);
+  nread = process_vm_readv(g_pid, local, 1, remote, 1, 0);
+  if (nread != size)
+    return false;
+  else
+    return true;
+}
+
 /**********************************************************/
 int WriteM(long address, int value)
 {
@@ -182,5 +206,21 @@ int WriteM(long address, int value)
 /**********************************************************/
 void Search(IntCollection* addressRanges, int value)
 {
+  for (int region = 0; region < addressRanges->count; region+=2)
+  {
+    int min = addressRanges->i[region];
+    int max = addressRanges->i[region + 1];
 
+    LOGI("min: %0x\n", min);
+    LOGI("max: %0x\n", max);
+
+    for (int address = min; address < max; address++)
+    {
+      float done=((float)(address - min +1 )/ (float)(max - min)) * 100.0f;
+      LOGI("processing ... %f\r", done);
+
+
+    }
+    LOGI("\n");
+  }
 }

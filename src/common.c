@@ -28,14 +28,20 @@ void IntCollectionFree(IntCollection* collection)
 
 void IntCollectionAdd(IntCollection* collection, int num)
 {
-  if (collection->count < collection->maxSize)
+  if (collection->count >= collection->maxSize)
   {
-    collection->i[collection->count++] = num;
-    LOGI("Adding %d\n", num);
+    collection->maxSize *= 2;
+    int* tmp = realloc(collection->i, sizeof(int) * collection->maxSize);
+    collection->i = tmp;
+    if(collection->i == NULL)
+    {
+      LOGE("Out of memory");
+      return;
+    }
+
+    //LOGI("Expanding to: %d count: %d\n" , collection->maxSize, collection->count);
   }
-  else
-  {
-    LOGW("Number out of range max: %d count: %d\n" , collection->maxSize, collection->count);
-  }
+  collection->i[collection->count++] = num;
+  //LOGI("Adding %d\n", num);
 
 }
