@@ -9,7 +9,6 @@ int main(int argc, char **argv)
 {
   LOGI("args %d %s\n", argc, argv[0]);
 
-  int address = 0;
   int value = 0;
   if (argc > 1)
   {
@@ -17,7 +16,7 @@ int main(int argc, char **argv)
     if (argc > 2)
     {
       //address = (int) strtol(argv[2], NULL, 16);
-      value = (int) strtol(argv[2], NULL, 16);
+      value = (int) strtol(argv[2], NULL, 10);
     }
     else
     {
@@ -36,11 +35,11 @@ int main(int argc, char **argv)
   GetRegions(&ranges);
   Search(&ranges, value);
 
-  int currentValue = ReadM(address);
-  LOGI("Value is %d\n", value);
+  //int currentValue = ReadM(address);
+  //LOGI("Value is %d\n", value);
 
-  WriteM(address, 99);
-  LOGI("Value is now 99\n");
+  //WriteM(address, 99);
+  //LOGI("Value is now 99\n");
 
   return 0;
 }

@@ -12,6 +12,27 @@
 extern int g_pid;
 
 /*
+ * How many bytes to read at
+ * a time from the remote process
+ */
+#define BLOCK_SIZE 1024
+
+/*
+ * Data union used to convert 4 bytes to
+ * other data types for comparison
+ */
+union Data
+{
+  char c;
+  unsigned char uc;
+  short s;
+  unsigned short us;
+  int i;
+  unsigned int ui;
+  char data[4];
+};
+
+/*
  * This hold the data found in /proc/<pid>/maps
  * example:
  *    7fa988062000-7fa98821b000 r-xp 00000000 fd:00 2232819  /usr/lib64/libc-2.23.so
@@ -175,7 +196,7 @@ bool ReadM2(long startAddress, char* outBuffer, int size)
   remote[0].iov_base = (void *) startAddress;
   remote[0].iov_len = size;
 
-  LOGI("g_pid is %d\n", g_pid);
+  //LOGI("g_pid is %d\n", g_pid);
   nread = process_vm_readv(g_pid, local, 1, remote, 1, 0);
   if (nread != size)
     return false;
@@ -197,30 +218,52 @@ int WriteM(long address, int value)
   remote[0].iov_base = (void *) address;
   remote[0].iov_len = 4;
 
-  LOGI("g_pid is %d\n", g_pid);
+  //LOGI("g_pid is %d\n", g_pid);
   nwrite = process_vm_writev(g_pid, local, 1, remote, 1, 0);
-  LOGI("Write %d bytes. \n", (int ) nwrite);
+  //LOGI("Write %d bytes. \n", (int ) nwrite);
   return nwrite;
 }
 
 /**********************************************************/
 void Search(IntCollection* addressRanges, int value)
 {
-  for (int region = 0; region < addressRanges->count; region+=2)
+  LOGI("Searching for %d...\n", value);
+
+  for (int region = 0; region < addressRanges->count; region += 2)
   {
     int min = addressRanges->i[region];
     int max = addressRanges->i[region + 1];
+    char buffer[BLOCK_SIZE] = { 0 };
 
-    LOGI("min: %0x\n", min);
-    LOGI("max: %0x\n", max);
+    //LOGI("min: %0x\n", min);
+    //LOGI("max: %0x\n", max);
 
-    for (int address = min; address < max; address++)
+    if ((max - min) % BLOCK_SIZE != 0)
     {
-      float done=((float)(address - min +1 )/ (float)(max - min)) * 100.0f;
-      LOGI("processing ... %f\r", done);
-
-
+      LOGW("Not aligned to %d \n", BLOCK_SIZE);
     }
-    LOGI("\n");
+
+    for (int address = min; address < max; address += BLOCK_SIZE)
+    {
+      float done = ((float) (address - min + 1) / (float) (max - min)) * 100.0f;
+      LOGI("processing ... %0.00f%%\r", done);
+      ReadM2(address, buffer, BLOCK_SIZE);
+      for (int i = 0; i < BLOCK_SIZE; i += 4)
+      {
+        int realAddress = address + i;
+        union Data data;
+        data.data[0] = buffer[i];
+        data.data[1] = buffer[i + 1];
+        data.data[2] = buffer[i + 2];
+        data.data[3] = buffer[i + 3];
+        if(data.i == value)
+        {
+          LOGI("\n");
+          LOGI("Found %d %0x\n", data.i, realAddress );
+
+        }
+      }
+    }
+    LOGI("Done       ... 100.00%%                     \n");
   }
 }
