@@ -21,7 +21,7 @@ extern int g_pid;
  * Data union used to convert 4 bytes to
  * other data types for comparison
  */
-union Data
+typedef union Data
 {
   char c;
   unsigned char uc;
@@ -30,7 +30,59 @@ union Data
   int i;
   unsigned int ui;
   char data[4];
-};
+}Data;
+
+/*
+ * Data types used in a search
+ */
+typedef enum DataType
+{
+  D_CHAR,
+  D_UCHAR,
+  D_SHORT,
+  D_USHORT,
+  D_INT,
+  D_UINT
+} DataType;
+
+/*
+ * The file handle to the last
+ * search
+ */
+FILE* lastSearch;
+/*
+ * The file handle for the current
+ * search
+ */
+FILE* currentSeach;
+
+/*
+ * Opens a file handle for read only
+ */
+FILE* OpenLastSearch(const char* filename);
+
+/*
+ * Open a file handle for write
+ */
+FILE* OpenCurrentSearch(const char* filename);
+
+/*
+ * Close the file handle.
+ * Param: file - The file pointer that was created by OpenCurrentSearch
+ *               or OpenLastSearch.
+ */
+void CloseSearch(FILE* file);
+
+/*
+ * Writes a line when an entry is found. This entry
+ * will be used in the next search.
+ * Param: file - The file pointer that was created by OpenCurrentSearch
+ *        address - The memory address of the remote address found in the search.
+ *        type    - The type of data that was searched for.
+ *        value   - The value of data that when the match was found.
+ */
+void WriteSearchEntry(FILE* file, int address, DataType type, Data value);
+
 
 /*
  * This hold the data found in /proc/<pid>/maps
