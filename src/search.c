@@ -10,6 +10,15 @@
 #include <sys/uio.h>
 
 extern int g_pid;
+/*
+ * The filename of the current search
+ */
+#define CURRENT_SEARCH "current.search"
+
+/*
+ * The file name of the last search
+ */
+#define LAST_SEARCH "last.search"
 
 /*
  * How many bytes to read at
@@ -30,20 +39,7 @@ typedef union Data
   int i;
   unsigned int ui;
   char data[4];
-}Data;
-
-/*
- * Data types used in a search
- */
-typedef enum DataType
-{
-  D_CHAR,
-  D_UCHAR,
-  D_SHORT,
-  D_USHORT,
-  D_INT,
-  D_UINT
-} DataType;
+} Data;
 
 /*
  * The file handle to the last
@@ -78,11 +74,11 @@ void CloseSearch(FILE* file);
  * will be used in the next search.
  * Param: file - The file pointer that was created by OpenCurrentSearch
  *        address - The memory address of the remote address found in the search.
- *        type    - The type of data that was searched for.
  *        value   - The value of data that when the match was found.
  */
 void WriteSearchEntry(FILE* file, int address, DataType type, Data value);
 
+void ReadLine(FILE* file, char * line, int len);
 
 /*
  * This hold the data found in /proc/<pid>/maps
@@ -277,10 +273,11 @@ int WriteM(long address, int value)
 }
 
 /**********************************************************/
-void Search(IntCollection* addressRanges, int value)
+void Search(IntCollection* addressRanges, DataType type, int value)
 {
   LOGI("Searching for %d...\n", value);
 
+  FILE* file = OpenCurrentSearch(CURRENT_SEARCH);
   for (int region = 0; region < addressRanges->count; region += 2)
   {
     int min = addressRanges->i[region];
@@ -308,14 +305,64 @@ void Search(IntCollection* addressRanges, int value)
         data.data[1] = buffer[i + 1];
         data.data[2] = buffer[i + 2];
         data.data[3] = buffer[i + 3];
-        if(data.i == value)
+        if (data.i == value)
         {
           LOGI("\n");
-          LOGI("Found %d %0x\n", data.i, realAddress );
-
+          LOGI("Found %d %0x\n", data.i, realAddress);
+          WriteSearchEntry(file, address, type, data);
         }
       }
     }
     LOGI("Done       ... 100.00%%                     \n");
   }
+  CloseSearch(file);
+}
+
+FILE* OpenCurrentSearch(const char* filename)
+{
+  FILE* file = fopen(filename, "w");
+  return file;
+}
+
+void CloseSearch(FILE* file)
+{
+  fclose(file);
+}
+
+/*
+ * Writes a line when an entry is found. This entry
+ * will be used in the next search.
+ * Param: file - The file pointer that was created by OpenCurrentSearch
+ *        address - The memory address of the remote address found in the search.
+ *        value   - The value of data that when the match was found.
+ */
+void WriteSearchEntry(FILE* file, int address, DataType type, Data value)
+{
+  char data[30] = { 0 };
+
+  switch (type)
+  {
+  case D_CHAR:
+    sprintf(data, "char:  %0x %d\n", address, value.c);
+    break;
+  case D_UCHAR:
+    sprintf(data, "uchar: %0x %d\n", address, value.uc);
+    break;
+  case D_SHORT:
+    sprintf(data, "short: %0x %d\n", address, value.s);
+    break;
+  case D_USHORT:
+    sprintf(data, "ushort: %0x %d\n", address, value.us);
+    break;
+  case D_INT:
+    sprintf(data, "int: %0x %d\n", address, value.i);
+    break;
+  case D_UINT:
+    sprintf(data, "uint: %0x %d\n", address, value.ui);
+    break;
+  }
+  //sprintf(data, "%s %0x %d\n", type )
+  int len = strlen(data);
+  LOGI("string length %d\n", len);
+  fwrite(data, strlen(data), 1, file);
 }

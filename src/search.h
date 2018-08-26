@@ -10,6 +10,14 @@
 int g_pid;
 
 /*
+ * Data types used in a search
+ */
+typedef enum DataType
+{
+  D_CHAR, D_UCHAR, D_SHORT, D_USHORT, D_INT, D_UINT
+} DataType;
+
+/*
  * Reads a given address.
  * NOTE: The g_pid must be set.
  * Param: address - The address where we want to read from.
@@ -35,6 +43,6 @@ void GetRegions(IntCollection* ranges);
  * Searches a collection of address ranges for a given value.
  *
  */
-void Search(IntCollection* addressRanges, int value);
+void Search(IntCollection* addressRanges, DataType type, int value);
 
 #endif

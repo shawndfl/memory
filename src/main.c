@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "common.h"
+#include "menu.h"
 
 extern int g_pid;
 
@@ -33,7 +34,7 @@ int main(int argc, char **argv)
   IntCollection ranges;
 
   GetRegions(&ranges);
-  Search(&ranges, value);
+  Search(&ranges, D_INT, value);
 
   //int currentValue = ReadM(address);
   //LOGI("Value is %d\n", value);

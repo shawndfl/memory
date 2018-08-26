@@ -6,3 +6,6 @@ obj/
 .project
 .cproject
 .settings
+
+# memory search file
+*.search
