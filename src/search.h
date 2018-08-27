@@ -2,6 +2,7 @@
 #define SRC_SEARCH_H_
 
 #include "common.h"
+#include <linux/limits.h>
 
 /*
  * The global pid used by all the memory access functions.
@@ -10,11 +11,50 @@
 int g_pid;
 
 /*
+ * Data union used to convert 4 bytes to
+ * other data types for comparison
+ */
+typedef union Data
+{
+  char c;
+  unsigned char uc;
+  short s;
+  unsigned short us;
+  int i;
+  unsigned int ui;
+  char data[4];
+} Data;
+
+/*
+ * Search type used in searches and Search Context
+ */
+typedef enum SearchType
+{
+  ST_Excat,
+  ST_HasIncreased,
+  ST_HasDecreased,
+  ST_Unknown,
+  ST_HasNotChanged,
+  ST_HasChanged
+
+} SearchType;
+
+typedef struct SearchContext
+{
+  char currentFile[PATH_MAX];
+  char lastFile[PATH_MAX];
+  SearchType SearchType;
+  Data compareValue;
+
+} SearchContext;
+
+
+/*
  * Data types used in a search
  */
 typedef enum DataType
 {
-  D_CHAR, D_UCHAR, D_SHORT, D_USHORT, D_INT, D_UINT
+  DT_CHAR, DT_UCHAR, DT_SHORT, DT_USHORT, DT_INT, DT_UINT
 } DataType;
 
 /*

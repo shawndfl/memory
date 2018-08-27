@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <linux/limits.h>
 #include <stdbool.h>
 
 #define __USE_GNU
@@ -26,20 +25,6 @@ extern int g_pid;
  */
 #define BLOCK_SIZE 1024
 
-/*
- * Data union used to convert 4 bytes to
- * other data types for comparison
- */
-typedef union Data
-{
-  char c;
-  unsigned char uc;
-  short s;
-  unsigned short us;
-  int i;
-  unsigned int ui;
-  char data[4];
-} Data;
 
 /*
  * The file handle to the last
@@ -307,9 +292,9 @@ void Search(IntCollection* addressRanges, DataType type, int value)
         data.data[3] = buffer[i + 3];
         if (data.i == value)
         {
-          LOGI("\n");
-          LOGI("Found %d %0x\n", data.i, realAddress);
-          WriteSearchEntry(file, address, type, data);
+          //LOGI("\n");
+          //LOGI("Found %d %0x\n", data.i, realAddress);
+          WriteSearchEntry(file, realAddress, type, data);
         }
       }
     }
@@ -342,27 +327,27 @@ void WriteSearchEntry(FILE* file, int address, DataType type, Data value)
 
   switch (type)
   {
-  case D_CHAR:
+  case DT_CHAR:
     sprintf(data, "char:  %0x %d\n", address, value.c);
     break;
-  case D_UCHAR:
+  case DT_UCHAR:
     sprintf(data, "uchar: %0x %d\n", address, value.uc);
     break;
-  case D_SHORT:
+  case DT_SHORT:
     sprintf(data, "short: %0x %d\n", address, value.s);
     break;
-  case D_USHORT:
+  case DT_USHORT:
     sprintf(data, "ushort: %0x %d\n", address, value.us);
     break;
-  case D_INT:
+  case DT_INT:
     sprintf(data, "int: %0x %d\n", address, value.i);
     break;
-  case D_UINT:
+  case DT_UINT:
     sprintf(data, "uint: %0x %d\n", address, value.ui);
     break;
   }
   //sprintf(data, "%s %0x %d\n", type )
-  int len = strlen(data);
-  LOGI("string length %d\n", len);
+  //int len = strlen(data);
+  //LOGI("string length %d\n", len);
   fwrite(data, strlen(data), 1, file);
 }

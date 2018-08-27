@@ -5,6 +5,8 @@
  *      Author: shawn
  */
 
+#include <linux/limits.h>
+
 #ifndef SRC_MENU_H_
 #define SRC_MENU_H_
 
@@ -44,6 +46,12 @@
  *
  */
 
+typedef struct MenuContext
+{
+  int pid;
+  char addrFile[PATH_MAX];
+}MenuContext;
+
 typedef enum MenuId
 {
   MENU_FIRST,
@@ -70,8 +78,6 @@ typedef struct MenuState
 
 
 int FirstSearch();
-
-
 
 
 #endif /* SRC_MENU_H_ */
