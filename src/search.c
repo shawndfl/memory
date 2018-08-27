@@ -25,7 +25,6 @@ extern int g_pid;
  */
 #define BLOCK_SIZE 1024
 
-
 /*
  * The file handle to the last
  * search
@@ -166,7 +165,7 @@ void GetRegions(IntCollection* ranges)
   stream = fopen(file, "r");
   if (stream == NULL)
   {
-    LOGE("Cannot open %s", file);
+    LOGE("Cannot open %s\n", file);
     exit(EXIT_FAILURE);
   }
 
@@ -276,6 +275,7 @@ void Search(IntCollection* addressRanges, DataType type, int value)
     {
       LOGW("Not aligned to %d \n", BLOCK_SIZE);
     }
+    int found = 0;
 
     for (int address = min; address < max; address += BLOCK_SIZE)
     {
@@ -292,13 +292,14 @@ void Search(IntCollection* addressRanges, DataType type, int value)
         data.data[3] = buffer[i + 3];
         if (data.i == value)
         {
+          found++;
           //LOGI("\n");
           //LOGI("Found %d %0x\n", data.i, realAddress);
           WriteSearchEntry(file, realAddress, type, data);
         }
       }
     }
-    LOGI("Done       ... 100.00%%                     \n");
+    LOGI("Done       ... 100.00%% Found: %d                     \n", found);
   }
   CloseSearch(file);
 }

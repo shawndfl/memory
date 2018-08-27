@@ -32,7 +32,7 @@ int main(int argc, char **argv)
       if (i + 1 >= argc)
       {
         Usage();
-        printf("Expecting filename");
+        printf("Expecting filename.\n");
         return 1;
       }
       strcpy(addrFile, argv[i + 1]);
@@ -46,13 +46,13 @@ int main(int argc, char **argv)
   if (g_pid == 0)
   {
     Usage();
-    printf("Expecting pid.");
+    printf("Expecting pid.\n");
     return 1;
   }
   IntCollection ranges;
 
   GetRegions(&ranges);
-  Search(&ranges, DT_INT, 0);
+  Search(&ranges, DT_INT, 105);
 
   //int currentValue = ReadM(address);
   //LOGI("Value is %d\n", value);
@@ -67,8 +67,8 @@ void Usage()
 {
   printf("Usage\n");
   printf("  search [-addr <filename>] pid\n");
-  printf("    addr <filename>] - The file name of an addr file. ");
-  printf("                       This file is used to set value in");
-  printf("                       memory of a given process \n");
-  printf("    pid - The process id of the remote process. \n");
+  printf("    addr <filename>] - The file name of an addr file.\n");
+  printf("                       This file is used to set value in\n");
+  printf("                       memory of a given process. \n");
+  printf("    pid - The process id of the remote process.\n\n");
 }
