@@ -256,6 +256,23 @@ int WriteM(long address, int value)
   return nwrite;
 }
 
+void SearchRange(int min, int max, SearchContext* context);
+void SearchFromFile();
+
+/**********************************************************/
+void SearchEx(SearchContext* context)
+{
+  if (context == NULL)
+  {
+    LOGE("context cannot be null.\n");
+    return;
+  }
+
+  IntCollection ranges;
+  GetRegions(&ranges);
+
+}
+
 /**********************************************************/
 void Search(IntCollection* addressRanges, DataType type, int value)
 {

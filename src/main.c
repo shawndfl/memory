@@ -22,11 +22,13 @@ int main(int argc, char **argv)
   // Process arguments
   for (int i = 0; i < argc; i++)
   {
+    // Help
     if (strcmp(argv[i], "-h") == 0)
     {
       Usage();
       return 1;
     }
+    // Address file
     else if (strcmp(argv[i], "-addr") == 0)
     {
       if (i + 1 >= argc)
@@ -37,6 +39,7 @@ int main(int argc, char **argv)
       }
       strcpy(addrFile, argv[i + 1]);
     }
+    // Search expect a pid
     else
     {
       g_pid = atoi(argv[i]);
@@ -49,16 +52,20 @@ int main(int argc, char **argv)
     printf("Expecting pid.\n");
     return 1;
   }
-  IntCollection ranges;
 
-  GetRegions(&ranges);
-  Search(&ranges, DT_INT, 105);
+  if(strlen(addrFile) > 0)
+  {
+    EditAddress(g_pid, addrFile);
+  }
+  else
+  {
+    FirstSearch(g_pid);
+  }
+  //IntCollection ranges;
+  //GetRegions(&ranges);
+  //Search(&ranges, DT_INT, 105);
 
-  //int currentValue = ReadM(address);
-  //LOGI("Value is %d\n", value);
 
-  //WriteM(address, 99);
-  //LOGI("Value is now 99\n");
 
   return 0;
 }

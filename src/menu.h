@@ -10,6 +10,8 @@
 #ifndef SRC_MENU_H_
 #define SRC_MENU_H_
 
+struct SearchContext;
+
 /*
  * if -addr <file> go to menu Address file
  * if -pid <pid> go to menu First search
@@ -17,13 +19,12 @@
  * Address file (filename: )
  * -reload file
  * -refresh data
- * -main menu
  *
  * First search
  * -exact value
  * -unknown value
  * -set data type
- * -main menu
+ * -restart
  *
  * Set Data Type (current type: )
  * -u char
@@ -46,38 +47,16 @@
  *
  */
 
-typedef struct MenuContext
-{
-  int pid;
-  char addrFile[PATH_MAX];
-}MenuContext;
-
-typedef enum MenuId
-{
-  MENU_FIRST,
-  MENU_NEXT,
-
-}MenuId;
-
-typedef struct MenuState
-{
-
-}MenuState;
+/*
+ * The first search. Given a pid this function will
+ * guide the user through a menu to search memory for values.
+ */
+int FirstSearch(int pid);
 
 /*
- * Go back to the previous menu
+ * Edits a address file
  */
-#define MENU_BACK       1
-
-/*
- * Used to set the data type of the search
- */
-#define MENU_SET_TYPE   1
-
-#define MENU_SEARCH     3
-
-
-int FirstSearch();
+int EditAddress(int pid, const char* addressFile);
 
 
 #endif /* SRC_MENU_H_ */
